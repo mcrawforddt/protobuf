@@ -45,18 +45,9 @@ BuildArch:  noarch
 %setup -q
 
 %build
-mkdir -p /builddir/go/src/%{goipath}
-rmdir /builddir/go/src/%{goipath}
-ln -s $PWD /builddir/go/src/%{goipath}
-ls
-find
-%{!?_licensedir:%global license %doc}
-
-# We don't want to download new modules, but we want ones that BuildRequires packages provide
-export GO111MODULE=off
-# I think this isn't using the chroot or appropriate build directory
-export GOPATH=/usr/share/gocode:/builddir/go
-go build
+for cmd in cmd/* ; do
+  %gobuild -o %{gobuilddir}/bin/$(basename $cmd) %{goipath}/$cmd
+done
 
 %install
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
@@ -95,6 +86,7 @@ cat devel.file_list
 sort -u -o devel.file-list devel.file-list
 install -m 0755 -vd %{buildroot}%{gopath}/src/%(dirname %{oldgoipath})
 install -m 0755 -vd                     %{buildroot}%{_bindir}
+install -m 0755 -vp %{gobuilddir}/bin/* %{buildroot}%{_bindir}/
 
 %if %{rhel} != 8
 %if %{with check}
