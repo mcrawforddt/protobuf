@@ -14,7 +14,7 @@ Go support for Google's protocol buffers.}
 
 %global godocs          CONTRIBUTING.md README.md
 
-Name:           protobuf
+Name:           golang-google-protobuf
 Release:        1%{?dist}
 Summary:        Go support for Google's protocol buffers
 
